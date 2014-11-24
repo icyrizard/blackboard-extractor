@@ -58,7 +58,11 @@ function extract() {
 # forloop delimiter
 IFS=$'\n'
 
-# get all non-txt and non-pdf files
+# find_and_unpack:
+# Find all .txt files, remove .txt postfix, and use it as a prefix to
+# search for archives. If a pdf found, put it in the output directory.
+# The output directories name is generated from the first line of the .txt.
+# Blackboard uses that to state on which behalf the assignment was submitted.
 function find_and_unpack() {
     INPUT_DIR=$1
     OUTPUT_DIR=$2
