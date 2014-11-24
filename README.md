@@ -1,6 +1,8 @@
 ## Why is it needed
-This bash script is created to extract files from blackboard. Blackboard has a
-horrible way of creating a zipfile. This tries to fix it.
+This bash script is created to unpack zipfile from blackboard. Blackboard has
+a horrible way of creating a zipfile. This tries to fix it by creating a
+directory for every submit in a designated directory. Read the following
+section to learn how to download such a _horrible_ zipfile.
 
 ## Usage
 This bash script is used to unpack the zipfile blackboard generates when
