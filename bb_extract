@@ -114,25 +114,23 @@ function create_directory() {
 
 #Help function
 function HELP {
-  echo -e \\n"Help documentation for ${BOLD}${SCRIPT}.${NORM}"\\n
-  echo -e "${REV}Basic usage:${NORM} ${BOLD}$SCRIPT file.ext${NORM}"\\n
+  echo -e \\n"Help documentation for ${SCRIPT}."\\n
+  echo -e "Basic usage: $SCRIPT gradebook.zip"\\n
   echo "Command line switches are optional. The following switches are recognized."
-  echo "${REV}-d${NORM}  --Set output directory ${BOLD}a${NORM}. Default\n\
-                            is ${BOLD}/tmp/blackboard${NORM}."
-  echo -e "${REV}-h${NORM}  --Displays this help message. No further functions are performed."\\n
-  echo -e "Example: ${BOLD}$SCRIPT -d /tmp/assignment1 gradebook.zip${NORM}"\\n
+  echo "-d --Set output directory. ${BOLD}$OUTPUT_DIR${NORM}."
+  echo -e "-h --Displays this help message. No further functions are performed."\\n
+  echo -e "Example: ${BOLD}$SCRIPT -d assignment1 gradebook.zip${NORM}"\\n
   exit 1
 }
 
 
 #Check the number of arguments. If none are passed, print help and exit.
 NUMARGS=$#
-echo -e \\n"Number of arguments: $NUMARGS"
 if [ $NUMARGS -eq 0 ]; then
   HELP
 fi
 
-while getopts :d:h: FLAG; do
+while getopts :d:h FLAG; do
   case $FLAG in
     d)
       OUTPUT_DIR=$OPTARG
@@ -140,7 +138,7 @@ while getopts :d:h: FLAG; do
     h)  #show help
       HELP
       ;;
-    \?) #unrecognized option - show help
+    \?)
       echo -e \\n"Option -${BOLD}$OPTARG${NORM} not allowed."
       HELP
       ;;
