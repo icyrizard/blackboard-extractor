@@ -126,6 +126,7 @@ function HELP {
 NUMARGS=$#
 if [ $NUMARGS -eq 0 ]; then
   HELP
+  exit 1
 fi
 
 while getopts :d:h FLAG; do
