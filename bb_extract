@@ -85,11 +85,11 @@ function find_and_unpack() {
 
         PDF_LIST=`find "$INPUT_DIR" -name "$FIND_PREFIX\_*.pdf" -print0`
 
-        if [ -n "$PDF_LIST" ]; then
-            cp $PDF $SUBMIT_NAME
-        fi
+        for PDF in $PDF_LIST; do
+            cp $PDF_LIST $SUBMIT_NAME
+        done
 
-        if [ -z "$ARCHIVE_LIST" ]; then
+        if [ -z $ARCHIVE_LIST ]; then
             echo $SUBMIT_NAME >> "error.txt"
         else
             for ARCHIVE in $ARCHIVE_LIST; do
