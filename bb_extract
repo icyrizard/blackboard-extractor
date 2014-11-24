@@ -23,11 +23,11 @@
 # default extract directory
 BB_EXTRACT_DIR=/tmp/blackboard
 
-#Set Script Name variable
-SCRIPT=`basename ${BASH_SOURCE[0]}`
-
 #Initialize variables to default values.
 OUTPUT_DIR=/tmp/bb_cleaned
+
+#Set Script Name variable
+SCRIPT=`basename ${BASH_SOURCE[0]}`
 
 #Set fonts for Help.
 NORM=`tput sgr0`
@@ -50,8 +50,7 @@ function extract() {
            *)           echo "'$ARCHIVE' cannot be extracted via >extract<" && exit 1;;
        esac
    else
-       echo "'$ARCHIVE' is not a valid file $OUTPUT"
-       exit 1
+       echo "'$ARCHIVE' is not a valid file $OUTPUT, continueing"
    fi
 }
 
@@ -89,8 +88,7 @@ function find_and_unpack() {
             cp $PDF_LIST $SUBMIT_NAME
         done
 
-        if [ -z $ARCHIVE_LIST ]; then
-            echo $SUBMIT_NAME >> "error.txt"
+        if [ -z $ARCHIVE_LIST ]; then echo $SUBMIT_NAME >> "error.txt"
         else
             for ARCHIVE in $ARCHIVE_LIST; do
                 extract $ARCHIVE $SUBMIT_NAME
