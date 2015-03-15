@@ -42,6 +42,7 @@ function extract() {
        case $ARCHIVE in
            *.tar.bz2)   tar xvjf $ARCHIVE -C $OUTPUT;;
            *.tar.gz)    tar xvzf $ARCHIVE -C $OUTPUT;;
+           *.gz)        tar xvzf $ARCHIVE -C $OUTPUT;;
            *.rar)       unrar x $ARCHIVE $OUTPUT   ;;
            *.tar)       tar xvf $ARCHIVE   -C $OUTPUT;;
            *.tbz2)      tar xvjf $ARCHIVE  -C $OUTPUT;;
@@ -72,7 +73,11 @@ function find_and_unpack() {
         SUBMIT_NAME=$OUTPUT_DIR/`head -1 $PREFIX.txt| cut -d " " -f2,3,4,5,6 | \
             sed -e "s/\ /_/g;s/(//g;s/)//g;" | awk '{print tolower($0)}'`
 
-        mkdir -p $SUBMIT_NAME 
+        mkdir -p $SUBMIT_NAME
+
+        # cp txt to submitters DIR
+        cp $i $SUBMIT_NAME
+
         FIND_PREFIX=`basename $PREFIX`
         ARCHIVE_LIST=`find $INPUT_DIR -name "$FIND_PREFIX\_*.tar.gz" \
                     -o -name "$FIND_PREFIX\_*.tar"\
@@ -110,7 +115,7 @@ function create_directory() {
     mkdir -p $1
 }
 
-#Help function
+# Help function
 function HELP {
   echo -e \\n"Help documentation for ${SCRIPT}."\\n
   echo -e "Basic usage: $SCRIPT gradebook.zip"\\n
