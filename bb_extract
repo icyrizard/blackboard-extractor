@@ -37,21 +37,25 @@ REV=`tput smso`
 function extract() {
    ARCHIVE=$1
    OUTPUT=$2
+   result="success"
 
    if [ -f $ARCHIVE ] ; then
        case $ARCHIVE in
-           *.bz2)   tar xvjf $ARCHIVE -C $OUTPUT;;
-           *.gz)    tar xvzf $ARCHIVE -C $OUTPUT;;
-           *.tgz)   tar xvzf $ARCHIVE  -C $OUTPUT;;
-           *.tbz2)  tar xvjf $ARCHIVE  -C $OUTPUT;;
+           *.tbz)   tar xjf $ARCHIVE  -C $OUTPUT;;
+           *.bz2)   tar xjf $ARCHIVE -C $OUTPUT;;
+           *.gz)    tar xzf $ARCHIVE -C $OUTPUT;;
+           *.tgz)   tar xzf $ARCHIVE  -C $OUTPUT;;
+           *.tbz2)  tar xjf $ARCHIVE  -C $OUTPUT;;
            *.rar)   unrar x $ARCHIVE $OUTPUT;;
-           *.tar)   tar xvf $ARCHIVE   -C $OUTPUT;;
-           *.zip)   unzip $ARCHIVE     -d $OUTPUT;;
-           *)      echo "'$ARCHIVE' cannot be extracted via >extract<"
+           *.tar)   tar xf $ARCHIVE   -C $OUTPUT;;
+           *.zip)   unzip $ARCHIVE -d $OUTPUT 1> /dev/null;;
+           *)      $result="fail"
        esac
    else
-       echo "'$ARCHIVE' is not a valid file $OUTPUT, continueing"
+       $result="file_not_found"
    fi
+
+   echo $result
 }
 
 # forloop delimiter
@@ -78,18 +82,17 @@ function find_and_unpack() {
         cp $i $SUBMIT_NAME
 
         FIND_PREFIX=`basename $PREFIX`
-        ARCHIVE_LIST=`find $INPUT_DIR -name "$FIND_PREFIX\_*.tar.gz" \
+        ARCHIVE_LIST=`find $INPUT_DIR -name "$FIND_PREFIX\_*.gz" \
                     -o -name "$FIND_PREFIX\_*.tar"\
                     -o -name "$FIND_PREFIX\_*.zip"\
                     -o -name "$FIND_PREFIX\_*.rar"\
-                    -o -name "$FIND_PREFIX\_*.tgz"\
-                    -o -name "$FIND_PREFIX\_*.tar.bz2"`
+                    -o -name "$FIND_PREFIX\_*.[bz2tg]*"`
 
+        FILE_LIST=`find "$INPUT_DIR" -name "$FIND_PREFIX\_*.[A-Za-z0-9]*"`
 
-        PDF_LIST=`find "$INPUT_DIR" -name "$FIND_PREFIX\_*.pdf" -print0`
-
-        for PDF in $PDF_LIST; do
-            cp $PDF_LIST $SUBMIT_NAME
+        for FILE in $FILE_LIST; do
+            echo $FILE
+            cp $FILE_LIST $SUBMIT_NAME
         done
 
         if [ -z $ARCHIVE_LIST ]; then echo $SUBMIT_NAME >> "error.txt"
@@ -158,10 +161,14 @@ while [ $# -ne 0 ]; do
     create_directory $OUTPUT_DIR
 
     echo "extracting $ZIPFILE to $BB_EXTRACT_DIR"
-    extract $ZIPFILE $BB_EXTRACT_DIR
+    result=$(extract $ZIPFILE $BB_EXTRACT_DIR)
 
-    echo "find and unpack all submitted assignments"
-    find_and_unpack $BB_EXTRACT_DIR $OUTPUT_DIR
+    if [ $result != "fail" ]; then
+        echo "find and unpack all submitted assignments"
+        find_and_unpack $BB_EXTRACT_DIR $OUTPUT_DIR
+    else
+        echo "continueing"
+    fi
 
     shift
 done
