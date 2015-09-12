@@ -40,15 +40,14 @@ function extract() {
 
    if [ -f $ARCHIVE ] ; then
        case $ARCHIVE in
-           *.tar.bz2)   tar xvjf $ARCHIVE -C $OUTPUT;;
-           *.tar.gz)    tar xvzf $ARCHIVE -C $OUTPUT;;
-           *.gz)        tar xvzf $ARCHIVE -C $OUTPUT;;
-           *.rar)       unrar x $ARCHIVE $OUTPUT   ;;
-           *.tar)       tar xvf $ARCHIVE   -C $OUTPUT;;
-           *.tbz2)      tar xvjf $ARCHIVE  -C $OUTPUT;;
-           *.tgz)       tar xvzf $ARCHIVE  -C $OUTPUT;;
-           *.zip)       unzip $ARCHIVE     -d $OUTPUT;;
-           *)           echo "'$ARCHIVE' cannot be extracted via >extract<" && exit 1;;
+           *.bz2)   tar xvjf $ARCHIVE -C $OUTPUT;;
+           *.gz)    tar xvzf $ARCHIVE -C $OUTPUT;;
+           *.tgz)   tar xvzf $ARCHIVE  -C $OUTPUT;;
+           *.tbz2)  tar xvjf $ARCHIVE  -C $OUTPUT;;
+           *.rar)   unrar x $ARCHIVE $OUTPUT;;
+           *.tar)   tar xvf $ARCHIVE   -C $OUTPUT;;
+           *.zip)   unzip $ARCHIVE     -d $OUTPUT;;
+           *)      echo "'$ARCHIVE' cannot be extracted via >extract<"
        esac
    else
        echo "'$ARCHIVE' is not a valid file $OUTPUT, continueing"
