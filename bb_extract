@@ -34,28 +34,32 @@ NORM=`tput sgr0`
 BOLD=`tput bold`
 REV=`tput smso`
 
+unpack_result=""
+
+# using auto compression detection of tar. This is different for
+# GNU and bsdtar, hence this check
+if tar --version | grep -q GNU; then
+    auto_unpack_tar_command="tar -xaf";
+else
+    auto_unpack_tar_command="tar -xf";
+fi
+
 function extract() {
-   ARCHIVE=$1
-   OUTPUT=$2
-   result="success"
+   ARCHIVE=`printf "%q" $1`
+   OUTPUT=`printf "%q" $2`
+
+   unpack_result="success"
+   default_unpack_command="$auto_unpack_tar_command ARCHIVE $OUTPUT"
 
    if [ -f $ARCHIVE ] ; then
        case $ARCHIVE in
-           *.tbz)   tar xjf $ARCHIVE  -C $OUTPUT;;
-           *.bz2)   tar xjf $ARCHIVE -C $OUTPUT;;
-           *.gz)    tar xzf $ARCHIVE -C $OUTPUT;;
-           *.tgz)   tar xzf $ARCHIVE  -C $OUTPUT;;
-           *.tbz2)  tar xjf $ARCHIVE  -C $OUTPUT;;
            *.rar)   unrar x $ARCHIVE $OUTPUT;;
-           *.tar)   tar xf $ARCHIVE   -C $OUTPUT;;
            *.zip)   unzip $ARCHIVE -d $OUTPUT 1> /dev/null;;
-           *)      $result="fail"
+           *)   bash -c $default_unpack_command;;
        esac
    else
-       $result="file_not_found"
+       unpack_result="fail"
    fi
-
-   echo $result
 }
 
 # forloop delimiter
@@ -161,9 +165,9 @@ while [ $# -ne 0 ]; do
     create_directory $OUTPUT_DIR
 
     echo "extracting $ZIPFILE to $BB_EXTRACT_DIR"
-    result=$(extract $ZIPFILE $BB_EXTRACT_DIR)
+    extract $ZIPFILE $BB_EXTRACT_DIR
 
-    if [ $result != "fail" ]; then
+    if [ $unpack_result != "fail" ]; then
         echo "find and unpack all submitted assignments"
         find_and_unpack $BB_EXTRACT_DIR $OUTPUT_DIR
     else
